@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '@clerk/clerk-react'; // 1. Import Clerk
 
 const PostForm = ({ onPostAdded, onClose }) => {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        tags: '' // We will take this as a comma-separated string and convert it
+        tags: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // 2. Get the auth token hook
+    const { getToken } = useAuth();
+
+    // REPLACE THIS WITH YOUR RENDER BACKEND URL
+    const API_URL = 'https://algotrack-backend-wf1l.onrender.com';
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,13 +38,23 @@ const PostForm = ({ onPostAdded, onClose }) => {
         };
 
         try {
-            const response = await axios.post('https://algotrack-backend-wf1l.onrender.com/api/posts', postPayload);
-            onPostAdded(response.data);
-            setFormData({ title: '', content: '', tags: '' });
-            onClose(); // Automatically close the form after successful submission
+            // 3. Get the secure token
+            const token = await getToken();
+
+            // 4. Send the Request with Authorization Header
+            const response = await axios.post(`${API_URL}/api/posts`, postPayload, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            onPostAdded(response.data); // Update the UI instantly
+            setFormData({ title: '', content: '', tags: '' }); // Clear form
+            onClose(); // Hide the form
+            alert("Blog Post Published!");
         } catch (error) {
             console.error('Error creating post:', error);
-            alert("Failed to publish post.");
+            alert("Failed to publish post. You might not be signed in.");
         } finally {
             setIsSubmitting(false);
         }
