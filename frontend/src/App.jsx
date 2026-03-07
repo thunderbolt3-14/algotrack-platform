@@ -2,17 +2,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProblemForm from './components/ProblemForm';
 import Blog from './components/Blog';
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/clerk-react";
 
 function App() {
   const [problems, setProblems] = useState([]);
   const [activeTab, setActiveTab] = useState('problems');
   const [showForm, setShowForm] = useState(false);
   
-  // Use Clerk hook to get user details
-  const { user, isSignedIn } = useUser();
-
-  // REPLACE THIS WITH YOUR DEPLOYED RENDER URL
+  // REPLACE THIS WITH YOUR RENDER URL
   const API_URL = 'https://algotrack-backend-wf1l.onrender.com'; 
 
   useEffect(() => {
@@ -27,27 +23,21 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    // Basic frontend check: prevent delete if not signed in
-    if (!isSignedIn) {
-      alert("You must be signed in to delete problems.");
-      return;
+    if (confirm("Are you sure you want to delete this?")) {
+        axios.delete(`${API_URL}/api/problems/${id}`)
+        .then(() => setProblems(problems.filter(p => p._id !== id)))
+        .catch(error => console.error(error));
     }
-    
-    axios.delete(`${API_URL}/api/problems/${id}`)
-      .then(() => setProblems(problems.filter(p => p._id !== id)))
-      .catch(error => console.error(error));
   };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-      {/* Navbar */}
       <nav className="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
             AlgoTrack
           </h1>
-          
-          <div className="flex items-center gap-6">
+          <div className="flex gap-6">
             <button 
               onClick={() => setActiveTab('problems')}
               className={`text-sm font-medium transition-colors ${activeTab === 'problems' ? 'text-blue-400' : 'text-slate-400 hover:text-white'}`}
@@ -60,27 +50,11 @@ function App() {
             >
               Technical Blog
             </button>
-            
-            {/* Authentication Buttons */}
-            <div className="ml-4 border-l border-slate-700 pl-6">
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="bg-white text-slate-900 px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-200 transition-colors">
-                    Sign In
-                  </button>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
-            </div>
           </div>
         </div>
       </nav>
 
       <main className="max-w-4xl mx-auto p-6 mt-8">
-        
-        {/* TAB 1: PROBLEMS */}
         {activeTab === 'problems' && (
           <>
             <div className="flex justify-between items-center mb-8">
@@ -88,26 +62,20 @@ function App() {
                 <h2 className="text-3xl font-bold text-slate-800">Problem Dashboard</h2>
                 <p className="text-slate-500 mt-1">Track your daily DSA progress</p>
               </div>
-              
-              {/* Only show "Add Problem" if signed in */}
-              <SignedIn>
-                <button 
+              <button 
                   onClick={() => setShowForm(!showForm)}
                   className="bg-blue-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-700 transition-all font-semibold flex items-center gap-2"
                 >
                   {showForm ? 'Close Form' : '+ Log New Problem'}
-                </button>
-              </SignedIn>
+              </button>
             </div>
 
-            {/* Form Visibility */}
-            {showForm && isSignedIn && (
+            {showForm && (
               <div className="mb-8 animate-in fade-in slide-in-from-top-4 duration-300">
                 <ProblemForm onProblemAdded={handleProblemAdded} />
               </div>
             )}
 
-            {/* Problem List */}
             <div className="grid gap-4">
               {problems.map(problem => (
                 <div key={problem._id} className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex justify-between items-center group">
@@ -130,24 +98,19 @@ function App() {
                       </span>
                     </div>
                   </div>
-                  
-                  {/* Delete Button - Only visible if signed in */}
-                  <SignedIn>
-                    <button 
+                  <button 
                       onClick={() => handleDelete(problem._id)}
                       className="text-slate-300 hover:text-red-500 p-2 transition-colors"
                       title="Delete Problem"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
-                  </SignedIn>
                 </div>
               ))}
             </div>
           </>
         )}
 
-        {/* TAB 2: BLOG */}
         {activeTab === 'blog' && <Blog />}
       </main>
     </div>

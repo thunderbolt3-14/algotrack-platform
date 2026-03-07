@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '@clerk/clerk-react'; // <--- 1. Import Clerk
 
 const ProblemForm = ({ onProblemAdded }) => {
     const [formData, setFormData] = useState({
@@ -9,9 +8,6 @@ const ProblemForm = ({ onProblemAdded }) => {
         category: 'Arrays',
         link: ''
     });
-
-    // 2. Get the auth token hook
-    const { getToken } = useAuth();
 
     // REPLACE WITH YOUR RENDER URL
     const API_URL = 'https://algotrack-backend-wf1l.onrender.com';
@@ -23,22 +19,15 @@ const ProblemForm = ({ onProblemAdded }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // 3. Get the secure token
-            const token = await getToken();
-
-            // 4. Send the request WITH the token in the header
-            const response = await axios.post(`${API_URL}/api/problems`, formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            // No headers, no tokens. Just data.
+            const response = await axios.post(`${API_URL}/api/problems`, formData);
 
             onProblemAdded(response.data);
             setFormData({ title: '', difficulty: 'Easy', category: 'Arrays', link: '' });
             alert("Problem Added Successfully!");
         } catch (error) {
             console.error('Error adding problem:', error);
-            alert("Failed to add problem. You might not be signed in.");
+            alert("Failed to add problem.");
         }
     };
 
