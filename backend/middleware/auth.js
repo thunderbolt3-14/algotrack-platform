@@ -1,7 +1,13 @@
-// This function blocks any request that doesn't have a valid logged-in user
+// DEBUG VERSION: logs the auth state but DOES NOT block requests
 export const requireAuth = (req, res, next) => {
-    if (!req.auth.userId) {
+    // 1. Log exactly what Clerk sees (Look for this in Render Logs later)
+    console.log("🔍 DEBUG AUTH:", JSON.stringify(req.auth, null, 2));
+
+    // 2. TEMPORARILY ALLOW EVERYONE (Commented out the blocking code)
+    /* if (!req.auth.userId) {
         return res.status(401).json({ message: "Unauthorized: Please sign in." });
     }
-    next();
+    */
+   
+    next(); // Pass everyone through
 };

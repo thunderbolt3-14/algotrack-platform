@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '@clerk/clerk-react'; // <--- 1. Import Clerk Hook
+import { useAuth } from '@clerk/clerk-react'; // <--- 1. Import Clerk
 
 const ProblemForm = ({ onProblemAdded }) => {
     const [formData, setFormData] = useState({
@@ -9,8 +9,8 @@ const ProblemForm = ({ onProblemAdded }) => {
         category: 'Arrays',
         link: ''
     });
-    
-    // 2. Get the "getToken" function from Clerk
+
+    // 2. Get the auth token hook
     const { getToken } = useAuth();
 
     // REPLACE WITH YOUR RENDER URL
@@ -23,10 +23,10 @@ const ProblemForm = ({ onProblemAdded }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // 3. Get the actual secure token from the current session
+            // 3. Get the secure token
             const token = await getToken();
 
-            // 4. Send the token in the Headers
+            // 4. Send the request WITH the token in the header
             const response = await axios.post(`${API_URL}/api/problems`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -38,7 +38,7 @@ const ProblemForm = ({ onProblemAdded }) => {
             alert("Problem Added Successfully!");
         } catch (error) {
             console.error('Error adding problem:', error);
-            alert("Failed to add problem. Check the console.");
+            alert("Failed to add problem. You might not be signed in.");
         }
     };
 
