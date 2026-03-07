@@ -31,7 +31,7 @@ const PostForm = ({ onPostAdded, onClose }) => {
         };
 
         try {
-            const response = await axios.post('http://localhost:5000/api/posts', postPayload);
+            const response = await axios.post('https://algotrack-backend-wf1l.onrender.com/api/posts', postPayload);
             onPostAdded(response.data);
             setFormData({ title: '', content: '', tags: '' });
             onClose(); // Automatically close the form after successful submission

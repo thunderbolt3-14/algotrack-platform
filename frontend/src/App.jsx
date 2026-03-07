@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/problems');
+        const response = await axios.get('https://algotrack-backend-wf1l.onrender.com/api/problems');
         setProblems(response.data);
       } catch (error) {
         console.error('Error fetching problems:', error);
@@ -28,7 +28,7 @@ function App() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this problem?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/problems/${id}`);
+      await axios.delete(`https://algotrack-backend-wf1l.onrender.com/api/problems/${id}`);
       setProblems(problems.filter(problem => problem._id !== id));
     } catch (error) {
       console.error('Error deleting problem:', error);
@@ -37,7 +37,7 @@ function App() {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/problems/${id}`, { status: newStatus });
+      const response = await axios.put(`https://algotrack-backend-wf1l.onrender.com/api/problems/${id}`, { status: newStatus });
       setProblems(problems.map(problem => problem._id === id ? response.data : problem));
     } catch (error) {
       console.error('Error updating status:', error);

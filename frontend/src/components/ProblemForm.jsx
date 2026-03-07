@@ -26,7 +26,7 @@ const ProblemForm = ({ onProblemAdded }) => {
         
         try {
             // Send the POST request to your backend
-            const response = await axios.post('http://localhost:5000/api/problems', formData);
+            const response = await axios.post('https://algotrack-backend-wf1l.onrender.com/api/problems', formData);
             
             // Pass the newly saved problem up to the main App component
             onProblemAdded(response.data);
