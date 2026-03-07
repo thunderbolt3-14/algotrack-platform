@@ -1,13 +1,15 @@
-// DEBUG VERSION: logs the auth state but DOES NOT block requests
+// DEBUG VERSION: Log the auth data, but DO NOT block the user
 export const requireAuth = (req, res, next) => {
-    // 1. Log exactly what Clerk sees (Look for this in Render Logs later)
-    console.log("🔍 DEBUG AUTH:", JSON.stringify(req.auth, null, 2));
+    // 1. Log exactly what Clerk is telling the server
+    console.log("🔍 DEBUG LOG - Auth Data:", JSON.stringify(req.auth, null, 2));
 
-    // 2. TEMPORARILY ALLOW EVERYONE (Commented out the blocking code)
+    // 2. NORMALLY we would block you here:
     /* if (!req.auth.userId) {
-        return res.status(401).json({ message: "Unauthorized: Please sign in." });
+        return res.status(401).json({ message: "Unauthorized" });
     }
     */
-   
-    next(); // Pass everyone through
+
+    // 3. BUT TODAY, we let everyone in
+    console.log("⚠️ Bypassing security check for debugging...");
+    next(); 
 };
