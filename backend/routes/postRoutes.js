@@ -1,9 +1,10 @@
 import express from 'express';
-import { createPost, getPosts } from '../controllers/postController.js';
+import { getPosts, createPost } from '../controllers/postController.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/', createPost);
 router.get('/', getPosts);
+router.post('/', requireAuth, createPost); // <--- Protected
 
 export default router;
