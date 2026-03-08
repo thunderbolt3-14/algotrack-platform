@@ -3,32 +3,24 @@ import mongoose from 'mongoose';
 const problemSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     },
-    platform: {
+    link: {
         type: String,
-        required: true,
-        enum: ['LeetCode', 'Codeforces', 'HackerRank', 'Other'] // Restricts to these values
-    },
-    problemId: {
-        type: String, // e.g., '13' or '9'
         required: true
     },
     difficulty: {
         type: String,
-        enum: ['Easy', 'Medium', 'Hard'],
-        default: 'Medium'
+        required: true,
+        enum: ['Easy', 'Medium', 'Hard']
     },
-    status: {
+    category: {
         type: String,
-        enum: ['Solved', 'Attempted', 'To Do'],
-        default: 'To Do'
+        required: true
     },
-    notes: {
-        type: String, // You can store your approach or space/time complexity here
-        default: ''
-    }
-}, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
+    // We removed userId completely
+}, { timestamps: true });
 
-export default mongoose.model('Problem', problemSchema);
+const Problem = mongoose.model('Problem', problemSchema);
+
+export default Problem;
