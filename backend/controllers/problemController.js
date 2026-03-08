@@ -1,4 +1,4 @@
-import Problem from '../models/problem.js';
+import Problem from '../models/Problem.js';
 
 // Get all problems
 export const getProblems = async (req, res) => {
