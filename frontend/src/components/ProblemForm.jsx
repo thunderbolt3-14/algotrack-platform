@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { Send } from 'lucide-react';
 
 const ProblemForm = ({ onProblemAdded }) => {
     const [formData, setFormData] = useState({
@@ -9,7 +10,6 @@ const ProblemForm = ({ onProblemAdded }) => {
         link: ''
     });
 
-    // REPLACE WITH YOUR RENDER URL
     const API_URL = 'https://algotrack-backend-wf1l.onrender.com';
 
     const handleChange = (e) => {
@@ -19,12 +19,9 @@ const ProblemForm = ({ onProblemAdded }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // No headers, no tokens. Just data.
             const response = await axios.post(`${API_URL}/api/problems`, formData);
-
             onProblemAdded(response.data);
             setFormData({ title: '', difficulty: 'Easy', category: 'Arrays', link: '' });
-            alert("Problem Added Successfully!");
         } catch (error) {
             console.error('Error adding problem:', error);
             alert("Failed to add problem.");
@@ -32,43 +29,63 @@ const ProblemForm = ({ onProblemAdded }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-8 border border-slate-200">
-            <h2 className="text-xl font-bold mb-4 text-slate-800">Log New Problem</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input 
-                    required 
-                    type="text" 
-                    name="title" 
-                    value={formData.title} 
-                    onChange={handleChange} 
-                    placeholder="Problem Title (e.g., Two Sum)" 
-                    className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                />
-                <input 
-                    required 
-                    type="url" 
-                    name="link" 
-                    value={formData.link} 
-                    onChange={handleChange} 
-                    placeholder="Problem Link (LeetCode URL)" 
-                    className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                />
-                <select name="difficulty" value={formData.difficulty} onChange={handleChange} className="p-3 border rounded-lg">
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-                <input 
-                    type="text" 
-                    name="category" 
-                    value={formData.category} 
-                    onChange={handleChange} 
-                    placeholder="Category (e.g., Arrays, DP)" 
-                    className="p-3 border rounded-lg" 
-                />
+        <form onSubmit={handleSubmit} className="bg-[#111] p-6 rounded-2xl border border-white/10 shadow-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div className="space-y-2">
+                    <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Problem Title</label>
+                    <input 
+                        required 
+                        type="text" 
+                        name="title" 
+                        value={formData.title} 
+                        onChange={handleChange} 
+                        placeholder="e.g. Reverse Linked List" 
+                        className="w-full bg-black/50 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-700" 
+                    />
+                </div>
+                
+                <div className="space-y-2">
+                    <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Problem Link</label>
+                    <input 
+                        required 
+                        type="url" 
+                        name="link" 
+                        value={formData.link} 
+                        onChange={handleChange} 
+                        placeholder="https://leetcode.com/..." 
+                        className="w-full bg-black/50 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-700" 
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Difficulty</label>
+                    <select 
+                        name="difficulty" 
+                        value={formData.difficulty} 
+                        onChange={handleChange} 
+                        className="w-full bg-black/50 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-purple-500 transition-all appearance-none"
+                    >
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Category</label>
+                    <input 
+                        type="text" 
+                        name="category" 
+                        value={formData.category} 
+                        onChange={handleChange} 
+                        placeholder="e.g. DP, Graphs" 
+                        className="w-full bg-black/50 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-700" 
+                    />
+                </div>
             </div>
-            <button type="submit" className="bg-blue-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-blue-700 transition-colors w-full md:w-auto">
-                Add Problem
+            
+            <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-white py-3 px-6 rounded-lg font-bold transition-all flex justify-center items-center gap-2 shadow-lg shadow-purple-900/20">
+                <Send size={18} /> Add to Tracker
             </button>
         </form>
     );
